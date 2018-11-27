@@ -1,8 +1,21 @@
 #!/usr/bin/python3
-nota1 = float(input('Digite a primeira nota:'))
-nota2 = float(input('Digite a segunda nota:'))
 
-media = (nota1 + nota2) / 2
+soma = 0
+qtde = int(input('Informe a quantidade de notas: '))
+
+for n in range(qtde):
+    try:
+        nota = float(input('Digite a nota {}: '.format(n+1)))
+    except ValueError:
+        print('Nota inválida!')
+        exit()
+    if nota > 10:
+        print('Nota inválida!')
+        qtde -= 1
+        continue
+    soma += nota
+
+media = soma / qtde
 
 if media >= 7:
     result = 'Aprovado'
