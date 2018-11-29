@@ -1,17 +1,21 @@
 from flask import Blueprint, jsonify
+from connect import mongo_connect
 
+db = mongo_connect('test')
 usuario = Blueprint('usuario', __name__, url_prefix='/usuario')
 
-users = [
-    {'nome': 'teste1', 'idade': 18},
-    {'nome': 'teste2', 'idade': 18},
-    {'nome': 'teste3', 'idade': 18}
-]
-
 @usuario.route('/')
-def get_usuarios():
-    return jsonify(users)
+def get_users():
+    return jsonify(list(db.usuario.find()))
 
-@usuario.route('/<int:user>')
+@usuario.route('/<string:user>')
 def get_user(user):
-    return jsonify(users[user-1])
+    if user.isnumeric():
+        try:
+            return jsonify(db.usuario.find_one({"_id":int(user)}))
+        except Exception:
+            return None
+    elif len(user.split('.')) == 3:
+        return jsonify(db.usuario.find_one({"cpf":user}))
+    else:
+        return jsonify(list(db.usuario.find({"nome":user})))

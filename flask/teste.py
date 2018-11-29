@@ -1,12 +1,16 @@
-import requests
+from faker import Faker
+from connect import mongo_connect
 
-#re = requests.get('http:///httpbin.org/ip')
-#print(re.json())
+fake = Faker('pt-BR')
 
-headers = {"Content-type": "application/json"}
-data = {"nome": "daniel"}
+db = mongo_connect('test')
 
-re = requests.post(
-    "http://127.0.0.1:5000/",
-    data = data
-)
+for x in range(1,100):
+    data = {
+        "_id": x,
+        "nome": fake.name(),
+        "email": fake.email(),
+        "cpf": fake.cpf(),
+        "nascimento": fake.date_of_birth().strftime('%d-%m-%Y')
+    }
+    db.usuario.insert(data)
